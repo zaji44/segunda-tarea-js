@@ -1,0 +1,112 @@
+const MAX_CANTIDAD_POR_PRODUCTO = 10;
+
+
+let totalCompra = 0;
+let cantidadProductosTotales = 0;
+let seguirComprando = true;
+
+console.log("=== INICIO DE LA SESIÓN DE COMPRA ===");
+
+
+do {
+    
+    const opcionCategoria = prompt(
+        "Seleccioná una categoría de producto:\n" +
+        "1. Electrónica (10% de descuento)\n" +
+        "2. Ropa (15% de descuento)\n" +
+        "3. Alimentos (Sin descuento)\n" +
+        "Escribí el número de la opción elegida:"
+    );
+
+    let porcentajeDescuento = 0;
+    let nombreCategoria = "";
+
+    
+    switch (opcionCategoria) {
+        case "1":
+            nombreCategoria = "Electrónica";
+            porcentajeDescuento = 0.10;
+            break;
+        case "2":
+            nombreCategoria = "Ropa";
+            porcentajeDescuento = 0.15;
+            break;
+        case "3":
+            nombreCategoria = "Alimentos";
+            porcentajeDescuento = 0;
+            break;
+        default:
+            alert("⚠️ Opción de categoría no válida. Intentalo de nuevo.");
+            console.warn("Intento fallido: Categoría no válida ingresada.");
+            continue; // Salta al siguiente ciclo del bucle do...while
+    }
+
+
+    const precioIngresado = parseFloat(prompt(`Ingresá el precio unitario del producto de ${nombreCategoria}:`));
+
+    
+    if (isNaN(precioIngresado) || precioIngresado <= 0) {
+        alert("❌ Precio inválido. Debe ingresar un valor numérico mayor a 0.");
+        console.error("Error: Precio inválido ingresado.");
+        continue;
+    }
+
+    
+    const cantidadIngresada = parseInt(prompt(`Ingresá la cantidad a comprar (Máximo ${MAX_CANTIDAD_POR_PRODUCTO} unidades):`));
+
+    // BUCLE WHILE (DENTRO DEL BUCLE PRINCIPAL): Repite la consulta hasta que la cantidad sea válida
+    let cantidadValida = cantidadIngresada;
+    
+    
+    while (isNaN(cantidadValida) || cantidadValida <= 0 || cantidadValida > MAX_CANTIDAD_POR_PRODUCTO) {
+        alert(`❌ Cantidad no permitida. Debe ser un número entre 1 y ${MAX_CANTIDAD_POR_PRODUCTO}.`);
+        cantidadValida = parseInt(prompt(`Ingresá nuevamente la cantidad (Máximo ${MAX_CANTIDAD_POR_PRODUCTO} unidades):`));
+    }
+
+    
+    const subtotalBruto = precioIngresado * cantidadValida;
+    const montoDescuento = subtotalBruto * porcentajeDescuento;
+    const subtotalNeto = subtotalBruto - montoDescuento;
+
+    
+    totalCompra += subtotalNeto;
+    cantidadProductosTotales += cantidadValida;
+
+    
+    console.log(`+ Agregado: ${cantidadValida}x (${nombreCategoria}) - Subtotal: $${subtotalNeto.toFixed(2)} (Ahorro: $${montoDescuento.toFixed(2)})`);
+
+    alert(
+        `✅ Producto agregado al carrito:\n` +
+        `- Categoría: ${nombreCategoria}\n` +
+        `- Cantidad: ${cantidadValida}\n` +
+        `- Subtotal con descuento: $${subtotalNeto.toFixed(2)}`
+    );
+
+    
+    const respuestaSeguir = prompt("¿Deseás agregar otro producto al carrito? (Escribí 'SI' para continuar o 'NO' / 'ESC' para finalizar)").toUpperCase();
+
+    // Condicional para verificar el fin de la interacción
+    if (respuestaSeguir === "NO" || respuestaSeguir === "ESC") {
+        seguirComprando = false;
+    }
+
+} while (seguirComprando);
+
+
+console.log("=== RESUMEN FINAL DE LA COMPRA ===");
+
+if (cantidadProductosTotales > 0) {
+    console.log(`Total de artículos: ${cantidadProductosTotales}`);
+    console.log(`Monto final a pagar: $${totalCompra.toFixed(2)}`);
+
+    alert(
+        `🛒 RESUMEN DE TU COMPRA\n` +
+        `----------------------------------------\n` +
+        `• Cantidad de productos: ${cantidadProductosTotales}\n` +
+        `• Total a pagar: $${totalCompra.toFixed(2)}\n\n` +
+        `¡Gracias por tu compra!`
+    );
+} else {
+    console.log("No se completó ninguna compra.");
+    alert("No agregaste ningún producto a tu carrito.");
+}
